@@ -2,6 +2,52 @@
 
 This file provides guidance to Claude Code when working with this Android project.
 
+## Issue Tracking with bd (beads)
+
+This project uses **bd** for issue tracking. See [AGENTS.md](AGENTS.md) for the complete workflow.
+
+### Essential Commands
+
+```bash
+bd ready                              # Find available work (no blockers)
+bd show <id>                          # View issue details
+bd create                             # Create new issue interactively
+bd update <id> --status in_progress   # Claim work
+bd close <id>                         # Complete work
+bd list                               # List all issues
+bd blocked                            # Show blocked issues
+bd dep add <id> --blocked-by <id>     # Add dependency
+```
+
+### Workflow Requirements
+
+1. **Before starting work**: Run `bd ready` to find available tasks
+2. **Claim work**: Update status to `in_progress` before coding
+3. **Create issues**: File issues for bugs, features, or follow-up work
+4. **Track dependencies**: Use `bd dep` to link related issues
+
+### Session Completion (MANDATORY)
+
+**Follow AGENTS.md "Landing the Plane" protocol:**
+
+```bash
+# 1. Run quality gates (if code changed)
+gradle assembleDebug
+gradle lint
+
+# 2. Update issue status
+bd close <completed-issues>
+bd update <in-progress> --status open  # if not finished
+
+# 3. Sync and push (REQUIRED)
+git pull --rebase
+bd sync
+git push
+git status  # Must show "up to date with origin"
+```
+
+**Work is NOT complete until `git push` succeeds.**
+
 ## Project Overview
 
 **browser-launcher** is an Android application written in Kotlin that handles browser launching functionality.
