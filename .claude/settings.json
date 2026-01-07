@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./gradlew:*)",
+      "Bash(gradlew:*)",
+      "Bash(adb:*)",
+      "Read(app/**)",
+      "Read(*.gradle.kts)",
+      "Read(*.xml)",
+      "Edit(app/src/**)",
+      "Write(app/src/**)"
+    ],
+    "deny": [
+      "Bash(rm -rf:*)",
+      "Bash(*gradle.properties*password*)",
+      "Write(**/local.properties)",
+      "Write(**/*.keystore)"
+    ]
+  },
+  "env": {
+    "ANDROID_HOME": "/data/data/com.termux/files/home/android-sdk",
+    "JAVA_HOME": "/data/data/com.termux/files/usr/opt/openjdk"
+  }
+}
