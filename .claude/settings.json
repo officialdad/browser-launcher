@@ -12,13 +12,8 @@
     ],
     "deny": [
       "Bash(rm -rf:*)",
-      "Bash(*gradle.properties*password*)",
       "Write(**/local.properties)",
       "Write(**/*.keystore)"
     ]
-  },
-  "env": {
-    "ANDROID_HOME": "/data/data/com.termux/files/home/android-sdk",
-    "JAVA_HOME": "/data/data/com.termux/files/usr/opt/openjdk"
   }
 }

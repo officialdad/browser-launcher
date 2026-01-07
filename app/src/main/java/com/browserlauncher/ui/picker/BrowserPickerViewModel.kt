@@ -16,7 +16,8 @@ sealed class PickerUiState {
     object Loading : PickerUiState()
     data class Success(
         val browsers: List<BrowserInfo>,
-        val url: String
+        val url: String,
+        val compactMode: Boolean = false
     ) : PickerUiState()
     data class Error(val message: String) : PickerUiState()
     object NoBrowsers : PickerUiState()
@@ -37,10 +38,16 @@ class BrowserPickerViewModel(application: Application) : AndroidViewModel(applic
                 if (browsers.isEmpty()) {
                     _uiState.value = PickerUiState.NoBrowsers
                 } else {
-                    // Sort with last used browser first
-                    val lastUsed = preferences.lastUsedBrowser.first()
-                    val sortedBrowsers = browsers.sortedByDescending { it.packageName == lastUsed }
-                    _uiState.value = PickerUiState.Success(sortedBrowsers, url)
+                    val showLastUsedFirst = preferences.showLastUsedFirst.first()
+                    val compactMode = preferences.compactMode.first()
+
+                    val sortedBrowsers = if (showLastUsedFirst) {
+                        val lastUsed = preferences.lastUsedBrowser.first()
+                        browsers.sortedByDescending { it.packageName == lastUsed }
+                    } else {
+                        browsers.sortedBy { it.label }
+                    }
+                    _uiState.value = PickerUiState.Success(sortedBrowsers, url, compactMode)
                 }
             } catch (e: Exception) {
                 _uiState.value = PickerUiState.Error(e.message ?: "Failed to load browsers")

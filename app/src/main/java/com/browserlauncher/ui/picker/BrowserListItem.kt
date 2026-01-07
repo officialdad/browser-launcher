@@ -6,12 +6,17 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.dp
@@ -43,6 +48,36 @@ fun BrowserListItem(
         },
         modifier = modifier.clickable(onClick = onClick)
     )
+}
+
+@Composable
+fun BrowserIconItem(
+    browser: BrowserInfo,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val bitmap = remember(browser.icon) {
+        browser.icon.toBitmap()
+    }
+
+    Surface(
+        modifier = modifier
+            .clickable(onClick = onClick)
+            .padding(8.dp),
+        shape = RoundedCornerShape(12.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+    ) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.padding(12.dp)
+        ) {
+            Image(
+                bitmap = bitmap.asImageBitmap(),
+                contentDescription = browser.label,
+                modifier = Modifier.size(48.dp)
+            )
+        }
+    }
 }
 
 private fun Drawable.toBitmap(): Bitmap {

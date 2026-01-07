@@ -21,6 +21,8 @@ class UserPreferences(private val context: Context) {
         val DEFAULT_BROWSER = stringPreferencesKey("default_browser")
         val ALWAYS_ASK = booleanPreferencesKey("always_ask")
         val LAST_USED_BROWSER = stringPreferencesKey("last_used_browser")
+        val SHOW_LAST_USED_FIRST = booleanPreferencesKey("show_last_used_first")
+        val COMPACT_MODE = booleanPreferencesKey("compact_mode")
     }
 
     /**
@@ -42,6 +44,20 @@ class UserPreferences(private val context: Context) {
      */
     val lastUsedBrowser: Flow<String?> = context.dataStore.data.map { prefs ->
         prefs[Keys.LAST_USED_BROWSER]
+    }
+
+    /**
+     * Flow indicating whether to show last used browser first (default false).
+     */
+    val showLastUsedFirst: Flow<Boolean> = context.dataStore.data.map { prefs ->
+        prefs[Keys.SHOW_LAST_USED_FIRST] ?: false
+    }
+
+    /**
+     * Flow indicating whether to use compact mode (default false).
+     */
+    val compactMode: Flow<Boolean> = context.dataStore.data.map { prefs ->
+        prefs[Keys.COMPACT_MODE] ?: false
     }
 
     /**
@@ -72,6 +88,24 @@ class UserPreferences(private val context: Context) {
     suspend fun setLastUsedBrowser(packageName: String) {
         context.dataStore.edit { prefs ->
             prefs[Keys.LAST_USED_BROWSER] = packageName
+        }
+    }
+
+    /**
+     * Sets whether to show last used browser first.
+     */
+    suspend fun setShowLastUsedFirst(enabled: Boolean) {
+        context.dataStore.edit { prefs ->
+            prefs[Keys.SHOW_LAST_USED_FIRST] = enabled
+        }
+    }
+
+    /**
+     * Sets whether to use compact mode.
+     */
+    suspend fun setCompactMode(enabled: Boolean) {
+        context.dataStore.edit { prefs ->
+            prefs[Keys.COMPACT_MODE] = enabled
         }
     }
 

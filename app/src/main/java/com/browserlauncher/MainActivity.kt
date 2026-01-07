@@ -1,6 +1,7 @@
 package com.browserlauncher
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import androidx.activity.ComponentActivity
@@ -20,6 +21,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -42,7 +44,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             BrowserLauncherTheme {
                 MainActivityContent(
-                    onOpenDefaultApps = { openDefaultAppsSettings() }
+                    onOpenDefaultApps = { openDefaultAppsSettings() },
+                    onTestLink = { openTestLink() }
                 )
             }
         }
@@ -60,26 +63,33 @@ class MainActivity : ComponentActivity() {
 
     private fun openAppSettings() {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-            data = android.net.Uri.parse("package:$packageName")
+            data = Uri.parse("package:$packageName")
         }
+        startActivity(intent)
+    }
+
+    private fun openTestLink() {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/officialdad/browser-launcher"))
         startActivity(intent)
     }
 }
 
 @Composable
 fun MainActivityContent(
-    onOpenDefaultApps: () -> Unit
+    onOpenDefaultApps: () -> Unit,
+    onTestLink: () -> Unit
 ) {
-    var showAbout by remember { mutableStateOf(false) }
+    var showSettings by remember { mutableStateOf(false) }
 
-    if (showAbout) {
+    if (showSettings) {
         SettingsScreen(
-            onNavigateBack = { showAbout = false }
+            onNavigateBack = { showSettings = false }
         )
     } else {
         MainScreen(
-            onOpenSettings = onOpenDefaultApps,
-            onOpenAbout = { showAbout = true }
+            onOpenDefaultApps = onOpenDefaultApps,
+            onOpenSettings = { showSettings = true },
+            onTestLink = onTestLink
         )
     }
 }
@@ -87,18 +97,19 @@ fun MainActivityContent(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
+    onOpenDefaultApps: () -> Unit,
     onOpenSettings: () -> Unit,
-    onOpenAbout: () -> Unit
+    onTestLink: () -> Unit
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Browser Launcher") },
                 actions = {
-                    IconButton(onClick = onOpenAbout) {
+                    IconButton(onClick = onOpenSettings) {
                         Icon(
                             imageVector = Icons.Default.Settings,
-                            contentDescription = "About"
+                            contentDescription = "Settings"
                         )
                     }
                 }
@@ -157,7 +168,7 @@ fun MainScreen(
                     Spacer(modifier = Modifier.height(4.dp))
 
                     Text(
-                        text = "4. Now links will show the browser picker!",
+                        text = "4. Now links will open Browser Launcher!",
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
@@ -179,7 +190,7 @@ fun MainScreen(
                     Spacer(modifier = Modifier.height(12.dp))
 
                     Text(
-                        text = "If a browser doesn't open from the picker:",
+                        text = "If a browser doesn't open:",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -196,10 +207,19 @@ fun MainScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
-                onClick = onOpenSettings,
+                onClick = onOpenDefaultApps,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Open Default Apps Settings")
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            OutlinedButton(
+                onClick = onTestLink,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Test with a Link")
             }
         }
     }

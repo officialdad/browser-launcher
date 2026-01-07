@@ -1,6 +1,9 @@
 package com.browserlauncher.ui.picker
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -87,15 +90,24 @@ fun BrowserPickerContent(
                 Spacer(modifier = Modifier.height(8.dp))
                 HorizontalDivider()
 
-                // Browser list
-                LazyColumn(
-                    modifier = Modifier.weight(1f, fill = false)
-                ) {
-                    items(uiState.browsers) { browser ->
-                        BrowserListItem(
-                            browser = browser,
-                            onClick = { onBrowserSelected(browser) }
-                        )
+                if (uiState.compactMode) {
+                    // Compact mode: icons in a row
+                    CompactBrowserGrid(
+                        browsers = uiState.browsers,
+                        onBrowserSelected = onBrowserSelected,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 16.dp)
+                    )
+                } else {
+                    // List mode
+                    LazyColumn(
+                        modifier = Modifier.weight(1f, fill = false)
+                    ) {
+                        items(uiState.browsers) { browser ->
+                            BrowserListItem(
+                                browser = browser,
+                                onClick = { onBrowserSelected(browser) }
+                            )
+                        }
                     }
                 }
 
@@ -159,6 +171,27 @@ fun BrowserPickerContent(
                     }
                 }
             }
+        }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun CompactBrowserGrid(
+    browsers: List<BrowserInfo>,
+    onBrowserSelected: (BrowserInfo) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    FlowRow(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.Center
+    ) {
+        browsers.forEach { browser ->
+            BrowserIconItem(
+                browser = browser,
+                onClick = { onBrowserSelected(browser) }
+            )
         }
     }
 }
