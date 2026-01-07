@@ -30,6 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.activity.compose.BackHandler
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -80,6 +81,10 @@ fun MainActivityContent(
     onTestLink: () -> Unit
 ) {
     var showSettings by remember { mutableStateOf(false) }
+
+    BackHandler(enabled = showSettings) {
+        showSettings = false
+    }
 
     if (showSettings) {
         SettingsScreen(
