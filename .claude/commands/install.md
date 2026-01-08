@@ -1,3 +1,7 @@
+---
+description: Build and install APK via Termux
+---
+
 # Install APK via Termux
 
 Build and install the debug APK using Termux tools.

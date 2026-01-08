@@ -1,3 +1,7 @@
+---
+description: Run lint checks on the project
+---
+
 # Run Android Lint
 
 Run lint checks on the project using Gradle.

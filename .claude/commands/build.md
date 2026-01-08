@@ -1,3 +1,7 @@
+---
+description: Build the debug APK using Gradle
+---
+
 # Build Android Project
 
 Build the debug APK using Gradle.
