@@ -23,11 +23,13 @@ class BrowserPickerActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Disable enter animation
+        overridePendingTransition(0, 0)
 
         // Extract URL from intent
         val url = intent?.data?.toString()
         if (url == null) {
-            finish()
+            finishWithNoAnimation()
             return
         }
         pendingUrl = url
@@ -47,7 +49,7 @@ class BrowserPickerActivity : ComponentActivity() {
                             launchBrowser(browser, pendingUrl ?: return@launch)
                         }
                     },
-                    onDismiss = { finish() }
+                    onDismiss = { finishWithNoAnimation() }
                 )
             }
         }
@@ -80,7 +82,12 @@ class BrowserPickerActivity : ComponentActivity() {
                 Toast.LENGTH_SHORT
             ).show()
         }
+        finishWithNoAnimation()
+    }
+
+    private fun finishWithNoAnimation() {
         finish()
+        overridePendingTransition(0, 0)
     }
 
     private fun getFirefoxIntentReceiver(packageName: String): ComponentName? {
